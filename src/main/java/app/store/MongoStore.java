@@ -2,6 +2,8 @@
 package app.store;
 
 import com.mongodb.client.*;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.ReplaceOptions;
 import org.bson.Document;
 import app.model.Student;
 import com.google.gson.Gson;
@@ -12,14 +14,19 @@ public class MongoStore {
     static Gson gson = new Gson();
 
     public static void init() {
-        client = MongoClients.create("mongodb://localhost:27017"); // bağlantı adresi burada
+        client = MongoClients.create("mongodb://localhost:27017"); 
         collection = client.getDatabase("nosqllab").getCollection("ogrenciler");
-        collection.drop(); // eski kayıtları temizle
-        for (int i = 0; i < 10000; i++) {
-            String id = "2025" + String.format("%06d", i);
-            Student s = new Student(id, "Ad Soyad " + i, "Bilgisayar");
-            collection.insertOne(Document.parse(gson.toJson(s)));
-        }
+        collection.drop(); // eski kayıtlar silinir
+    }
+
+    public static void put(String key, Student student){
+        String json = gson.toJson(student);
+        Document doc = Document.parse(json);
+
+        collection.replaceOne(Filters.eq("ogrenciNo", key),
+        doc,
+        new ReplaceOptions().upsert(true)
+        );
     }
 
     public static Student get(String id) {
