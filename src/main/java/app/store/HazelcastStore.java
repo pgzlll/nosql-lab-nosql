@@ -20,6 +20,10 @@ public class HazelcastStore {
         }
     }
 
+    public static void put(String key, Student student){
+        map.put(key, student);
+    }
+
     public static Student get(String id) {
         return map.get(id);
     }
