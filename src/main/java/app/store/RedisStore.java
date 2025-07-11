@@ -11,11 +11,11 @@ public class RedisStore {
 
     public static void init() {
         jedis = new Jedis("localhost", 6379); // IP ve PORT burada
-        for (int i = 0; i < 10000; i++) {
-            String id = "2025" + String.format("%06d", i);
-            Student s = new Student(id, "Ad Soyad " + i, "Bilgisayar");
-            jedis.set(id, gson.toJson(s));
-        }
+    }
+
+    public static void put(String key, Student student){
+        String json = gson.toJson(student);
+        jedis.set(key, json);
     }
 
     public static Student get(String id) {
